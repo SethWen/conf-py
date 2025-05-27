@@ -42,7 +42,7 @@ wheels = [
 ]
 
 [[package]]
-name = "conf-py"
+name = "confng-py"
 source = { editable = "." }
 dependencies = [
     { name = "casefy" },

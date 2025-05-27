@@ -1,4 +1,4 @@
-# conf-py
+# confng-py
 
 A simple configuration management tool for python.
 You can use it to manage your python application's configuration in a simple and flexible way.
@@ -6,13 +6,13 @@ You can use it to manage your python application's configuration in a simple and
 ### Install
 
 ```
-pip install conf-py
+pip install confng-py
 ```
 
 ### Usage
 
 ```python
-from conf_py import Conf
+from confng import Conf
 
 # create a new Conf instance with a config object and MergeEnvOptions
 # If you don't want to merge environment variables, you can omit the merge_env_options option.
@@ -58,7 +58,7 @@ print(conf.get('server.host')); # example.com
 import os
 import json
 
-from conf_py import Conf
+from confng import Conf
 
 # read config from conifg/default.json
 config_path = os.path.join('config', 'default.json')

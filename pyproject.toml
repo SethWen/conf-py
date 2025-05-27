@@ -3,7 +3,7 @@ requires = [ "hatchling" ]
 build-backend = "hatchling.build"
 
 [project]
-name = "conf-py"
+name = "confng-py"
 dynamic = [ "version" ]
 authors = [
     { name = "Shawn Wen", email = "coolrainerseth@gmail.com" }
@@ -21,10 +21,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/SethWen/conf-py"
-Documentation = "https://github.com/SethWen/conf-py#readme"
-Source = "https://github.com/SethWen/conf-py"
-Tracker = "https://github.com/SethWen/conf-py/issues"
+Homepage = "https://github.com/SethWen/confng-py"
+Documentation = "https://github.com/SethWen/confng-py#readme"
+Source = "https://github.com/SethWen/confng-py"
+Tracker = "https://github.com/SethWen/confng-py/issues"
 
 [project.scripts]
 cmd = "bin:cmd"
@@ -41,19 +41,19 @@ dev = [
 ]
 
 [tool.hatch.version]
-path = "conf_py/__init__.py"
+path = "confng/__init__.py"
 
 
 [tool.hatch.build.targets.wheel]
-packages = [ 'conf_py' ]
+packages = [ 'confng' ]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-testpaths = [ "conf_py" ]
-pythonpath = "conf_py"
+testpaths = [ "confng" ]
+pythonpath = "confng"
 
 [tool.pyright]
-include = [ "conf_py" ]
+include = [ "confng" ]
 typeCheckingMode = "standard"
 reportOptionalMemberAccess = false
 
