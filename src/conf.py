@@ -2,11 +2,7 @@ from dataclasses import dataclass
 import os
 import json
 from typing import Any, Dict, Optional, Callable
-
-
-def snakify(key: str) -> str:
-    """Convert camelCase or PascalCase to snake_case"""
-    return "".join(["_" + c.lower() if c.isupper() else c for c in key]).lstrip("_")
+from casefy import snakecase
 
 
 class Parsers:
@@ -75,12 +71,12 @@ def _merge_env(obj: Dict[str, Any], options: MergeEnvOptions) -> None:
                     )
                 else:
                     env_key = (
-                        f"{prefix.upper()}{separator}{snakify(key).upper()}{separator}{index}"
+                        f"{prefix.upper()}{separator}{snakecase(key).upper()}{separator}{index}"
                         if prefix
-                        else f"{snakify(key).upper()}{separator}{index}"
+                        else f"{snakecase(key).upper()}{separator}{index}"
                     )
                     if env_key in os.environ:
-                        basic_type = type(value).__name__
+                        basic_type = type(item).__name__
                         if basic_type == "int":
                             basic_type = "integer"
                         elif basic_type == "float":
@@ -96,9 +92,9 @@ def _merge_env(obj: Dict[str, Any], options: MergeEnvOptions) -> None:
                         value[index] = parser(os.environ[env_key], env_key)
         else:
             env_key = (
-                f"{prefix.upper()}{separator}{snakify(key).upper()}"
+                f"{prefix.upper()}{separator}{snakecase(key).upper()}"
                 if prefix
-                else snakify(key).upper()
+                else snakecase(key).upper()
             )
             if env_key in os.environ:
                 basic_type = type(value).__name__
@@ -161,9 +157,7 @@ class Conf:
                     if index >= len(val) or index < 0:
                         return False
                     val = val[index]
-                    print("2222--", val)
                 except ValueError:
-                    # raise ValueError(f"Invalid index: {k}")
                     return False
             else:
                 return False
@@ -172,39 +166,3 @@ class Conf:
 
     def display(self) -> None:
         print(json.dumps(self._conf, indent=2))
-
-
-# Example usage:
-if __name__ == "__main__":
-    # Set some environment variables for testing
-    os.environ["APP__DATABASE__HOST"] = "localhost"
-    os.environ["APP__DATABASE__PORT"] = "5432"
-    os.environ["APP__FEATURES__ENABLED"] = "true"
-    os.environ["APP__NUMBERS__0"] = "8"
-
-    config = {
-        "database": {
-            "host": "default_host",
-            "port": 1234,
-            "credentials": {"username": "user", "password": "pass"},
-        },
-        "features": {"enabled": False},
-        "numbers": [1, 2, 3],
-    }
-
-    options = ConfOptions(
-        config=config, merge_env_options=MergeEnvOptions(prefix="app", separator="__")
-    )
-
-    conf = Conf(options)
-    # conf.display()
-    print(conf.get("database.host"))  # Should print "localhost"
-    print(conf.get("database.port"))  # Should print 5432
-    print(conf.get("features.enabled"))  # Should print True
-    print(conf.get("numbers.0"))  # Should print 1
-    print(conf.get("numbers.1"))  # Should print 2
-    print(conf.get("not_found"))  # Should print 2
-    print(conf.get("not.exists"))
-
-    print(conf.has("numbers.5"))
-    print(conf.has("database.key"))

@@ -24,6 +24,15 @@ wheels = [
 ]
 
 [[package]]
+name = "casefy"
+version = "1.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/48/24/9c732e8e3585a1dc621c9c1349e55e87070c95d3c2d57bd8c5083ec8d731/casefy-1.1.0.tar.gz", hash = "sha256:849d6e0f80506fac70ab8e18999a4ca1eb7d8f70941682383d64aa22a7497f8f", size = 123884 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f1/6a/1766f8c163951a3c9aeb30a4e6f5de9b2eed8389e3906c4cf30fcb475be6/casefy-1.1.0-py3-none-any.whl", hash = "sha256:a3dfcb14d85902d90702db1e9835760237f6a73ec0ae3b7e991ad767513a3cbc", size = 6539 },
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -36,6 +45,9 @@ wheels = [
 name = "conf-py"
 version = "0.1.0"
 source = { editable = "." }
+dependencies = [
+    { name = "casefy" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -46,6 +58,7 @@ dev = [
 ]
 
 [package.metadata]
+requires-dist = [{ name = "casefy", specifier = ">=1.1.0" }]
 
 [package.metadata.requires-dev]
 dev = [

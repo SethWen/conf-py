@@ -16,7 +16,9 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent"
 ]
-dependencies = [  ]
+dependencies = [
+  "casefy>=1.1.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/SethWen/conf-py"
@@ -40,23 +42,23 @@ dev = [
 ]
 
 [tool.hatch.version]
-path = "conf-py/__init__.py"
+path = "src/__init__.py"
 
 
 [tool.hatch.build.targets.wheel]
-packages = [ 'conf-py' ]
+packages = [ 'src' ]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-testpaths = [ "conf-py" ]
-pythonpath = "conf-py"
+testpaths = [ "src" ]
+pythonpath = "src"
 
 [tool.pyright]
-include = [ "conf-py" ]
+include = [ "src" ]
 typeCheckingMode = "standard"
 reportOptionalMemberAccess = false
 
 [tool.ruff]
-include = [ "*.py", "conf-py/**/*.py" ]
+include = [ "*.py", "src/**/*.py" ]
 line-length = 88
 indent-width = 4
