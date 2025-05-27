@@ -34,10 +34,12 @@ class Parsers:
     def string(v: str, k: str) -> str:
         return v
 
+
 @dataclass
 class MergeEnvOptions:
     prefix: str = ""
     separator: str = "__"
+
 
 @dataclass
 class XConfOptions:
@@ -65,19 +67,20 @@ def merge_env(obj: Dict[str, Any], options: MergeEnvOptions) -> None:
             for index, item in enumerate(value):
                 if isinstance(item, dict):
                     merge_env(
-                            item,
-                            MergeEnvOptions(
-                                prefix=f"{prefix.upper()}{separator}{key}{separator}{index}"
-                                if prefix
-                                else f"{key}{separator}{index}",
-                                separator=separator,
-                    ))
+                        item,
+                        MergeEnvOptions(
+                            prefix=f"{prefix.upper()}{separator}{key}{separator}{index}"
+                            if prefix
+                            else f"{key}{separator}{index}",
+                            separator=separator,
+                        ),
+                    )
                 else:
                     env_key = (
-                    f"{prefix.upper()}{separator}{snakify(key).upper()}{separator}{index}"
-                    if prefix
-                    else f"{snakify(key).upper()}{separator}{index}"
-                )
+                        f"{prefix.upper()}{separator}{snakify(key).upper()}{separator}{index}"
+                        if prefix
+                        else f"{snakify(key).upper()}{separator}{index}"
+                    )
                 if env_key in os.environ:
                     basic_type = type(value).__name__
                     if basic_type == "int":
@@ -93,7 +96,7 @@ def merge_env(obj: Dict[str, Any], options: MergeEnvOptions) -> None:
                         Parsers, basic_type, Parsers.string
                     )
                     value[index] = parser(os.environ[env_key], env_key)
-                    pass    
+                    pass
         else:
             env_key = (
                 f"{prefix.upper()}{separator}{snakify(key).upper()}"
@@ -137,7 +140,7 @@ class Conf:
                     # raise ValueError(f"Invalid index: {k}")
                     val = None
             else:
-                val = None        
+                val = None
 
         # Return a copy to prevent modification
         if isinstance(val, dict):
@@ -146,6 +149,29 @@ class Conf:
             return val.copy()
         else:
             return val
+
+    def has(self, key: str):
+        keys = key.split(".")
+        val = self._conf
+        for k in keys:
+            if isinstance(val, dict):
+                if k not in val:
+                    return False
+                val = val.get(k)
+            elif isinstance(val, list):
+                try:
+                    index = int(k)
+                    if index >= len(val) or index < 0:
+                        return False
+                    val = val[index]
+                    print("2222--", val)
+                except ValueError:
+                    # raise ValueError(f"Invalid index: {k}")
+                    return False
+            else:
+                return False
+
+        return True
 
     def display(self) -> None:
         print(json.dumps(self._conf, indent=2))
@@ -182,3 +208,6 @@ if __name__ == "__main__":
     print(conf.get("numbers.1"))  # Should print 2
     print(conf.get("not_found"))  # Should print 2
     print(conf.get("not.exists"))
+
+    print(conf.has("numbers.5"))
+    print(conf.has("database.key"))
