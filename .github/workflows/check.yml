@@ -1,0 +1,38 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Check linting and formatting and testing
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+    - name: Checkout code from ${{ github.repository }}
+      uses: actions/checkout@v4
+
+    - name: Install the latest version of uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        version: "latest"
+        python-version: ${{ matrix.python-version }}
+
+    - name: Create venv and install dependencies
+      run: uv run install
+
+    - name: Check linting and formatting
+      run: uv run lint
+
+    - name: Test with pytest
+      run: uv run pytest
