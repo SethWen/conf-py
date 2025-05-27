@@ -42,23 +42,23 @@ dev = [
 ]
 
 [tool.hatch.version]
-path = "src/__init__.py"
+path = "conf_py/__init__.py"
 
 
 [tool.hatch.build.targets.wheel]
-packages = [ 'src' ]
+packages = [ 'conf_py' ]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-testpaths = [ "src" ]
-pythonpath = "src"
+testpaths = [ "conf_py" ]
+pythonpath = "conf_py"
 
 [tool.pyright]
-include = [ "src" ]
+include = [ "conf_py" ]
 typeCheckingMode = "standard"
 reportOptionalMemberAccess = false
 
 [tool.ruff]
-include = [ "*.py", "src/**/*.py" ]
+include = [ "*.py", "conf_py/**/*.py" ]
 line-length = 88
 indent-width = 4
