@@ -1,9 +1,7 @@
 from dataclasses import dataclass
 import os
 import json
-from typing import Any, Dict, Optional, TypeVar, Callable
-
-T = TypeVar("T")
+from typing import Any, Dict, Optional, Callable
 
 
 def snakify(key: str) -> str:
@@ -42,12 +40,12 @@ class MergeEnvOptions:
 
 
 @dataclass
-class XConfOptions:
+class ConfOptions:
     config: Dict[str, Any]
     merge_env_options: Optional[MergeEnvOptions] = None
 
 
-def merge_env(obj: Dict[str, Any], options: MergeEnvOptions) -> None:
+def _merge_env(obj: Dict[str, Any], options: MergeEnvOptions) -> None:
     prefix = options.prefix
     separator = options.separator
 
@@ -55,7 +53,7 @@ def merge_env(obj: Dict[str, Any], options: MergeEnvOptions) -> None:
         value = obj[key]
         if isinstance(value, dict):
             # If it's a dictionary, recursively process it
-            merge_env(
+            _merge_env(
                 value,
                 MergeEnvOptions(
                     prefix=f"{prefix.upper()}{separator}{key}" if prefix else key,
@@ -66,7 +64,7 @@ def merge_env(obj: Dict[str, Any], options: MergeEnvOptions) -> None:
             # If it's a list, process each item
             for index, item in enumerate(value):
                 if isinstance(item, dict):
-                    merge_env(
+                    _merge_env(
                         item,
                         MergeEnvOptions(
                             prefix=f"{prefix.upper()}{separator}{key}{separator}{index}"
@@ -81,22 +79,21 @@ def merge_env(obj: Dict[str, Any], options: MergeEnvOptions) -> None:
                         if prefix
                         else f"{snakify(key).upper()}{separator}{index}"
                     )
-                if env_key in os.environ:
-                    basic_type = type(value).__name__
-                    if basic_type == "int":
-                        basic_type = "integer"
-                    elif basic_type == "float":
-                        basic_type = "float"
-                    elif basic_type == "bool":
-                        basic_type = "boolean"
-                    elif basic_type == "str":
-                        basic_type = "string"
+                    if env_key in os.environ:
+                        basic_type = type(value).__name__
+                        if basic_type == "int":
+                            basic_type = "integer"
+                        elif basic_type == "float":
+                            basic_type = "float"
+                        elif basic_type == "bool":
+                            basic_type = "boolean"
+                        elif basic_type == "str":
+                            basic_type = "string"
 
-                    parser: Callable[[str, str], Any] = getattr(
-                        Parsers, basic_type, Parsers.string
-                    )
-                    value[index] = parser(os.environ[env_key], env_key)
-                    pass
+                        parser: Callable[[str, str], Any] = getattr(
+                            Parsers, basic_type, Parsers.string
+                        )
+                        value[index] = parser(os.environ[env_key], env_key)
         else:
             env_key = (
                 f"{prefix.upper()}{separator}{snakify(key).upper()}"
@@ -121,12 +118,12 @@ def merge_env(obj: Dict[str, Any], options: MergeEnvOptions) -> None:
 
 
 class Conf:
-    def __init__(self, options: XConfOptions):
+    def __init__(self, options: ConfOptions):
         self._conf = options.config.copy()
         if options.merge_env_options:
-            merge_env(self._conf, options.merge_env_options)
+            _merge_env(self._conf, options.merge_env_options)
 
-    def get(self, key: str) -> T:
+    def get(self, key: str):
         keys = key.split(".")
         val = self._conf
         for k in keys:
@@ -195,7 +192,7 @@ if __name__ == "__main__":
         "numbers": [1, 2, 3],
     }
 
-    options = XConfOptions(
+    options = ConfOptions(
         config=config, merge_env_options=MergeEnvOptions(prefix="app", separator="__")
     )
 
