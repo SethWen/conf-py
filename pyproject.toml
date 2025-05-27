@@ -1,13 +1,64 @@
+[build-system]
+requires = [ "hatchling" ]
+build-backend = "hatchling.build"
+
 [project]
 name = "conf-py"
 version = "0.1.0"
+authors = [
+    { name = "Your Name", email = "your.email@example.com" }
+]
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.10"
-dependencies = []
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+dependencies = [
+  "casefy>=1.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/SethWen/conf-py"
+Documentation = "https://github.com/SethWen/conf-py#readme"
+Source = "https://github.com/SethWen/conf-py"
+Tracker = "https://github.com/SethWen/conf-py/issues"
+
+[project.scripts]
+cmd = "bin:cmd"
+prepare = "bin:prepare"
+install = "bin:install"
+lint = "bin:lint"
+appver = "bin:appver"
 
 [dependency-groups]
 dev = [
+    "build>=1.2.2.post1",
+    "pyright>=1.1.401",
     "pytest>=8.3.5",
     "ruff>=0.11.11",
 ]
+
+[tool.hatch.version]
+path = "conf_py/__init__.py"
+
+
+[tool.hatch.build.targets.wheel]
+packages = [ 'conf_py' ]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = [ "conf_py" ]
+pythonpath = "conf_py"
+
+[tool.pyright]
+include = [ "conf_py" ]
+typeCheckingMode = "standard"
+reportOptionalMemberAccess = false
+
+[tool.ruff]
+include = [ "*.py", "conf_py/**/*.py" ]
+line-length = 88
+indent-width = 4
