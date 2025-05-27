@@ -8,6 +8,7 @@ on:
     branches: [ $default-branch ]
   pull_request:
     branches: [ $default-branch ]
+  workflow_dispatch:   
 
 jobs:
   build:
@@ -36,3 +37,6 @@ jobs:
 
     - name: Test with pytest
       run: uv run pytest
+
+    - name: Build distribution
+      run: uv run python -m build
